@@ -128,8 +128,8 @@ func AsciiDocFromDocBook(db *docBook.Doc, Styles ...Style) *asciiDoc.Doc {
 			if docBook.ConditionsMatch(db.PublicanCfg["condition"], c.Attributes["condition"]) {
 				switch {
 				case c.IsKind("ENTITY"):
-					ad.Entities[c.Attributes["KEY"]] = c.Attributes["VALUE"]
-					output += translate(c.Children)
+					ad.Entities[c.Attributes["KEY"]] = translate(c.Children)
+					//output += translate(c.Children)
 				case c.IsKind("TEXT"):
 					delete(register, c)
 					output += c.Attributes["TEXT"]

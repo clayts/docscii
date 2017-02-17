@@ -2,10 +2,11 @@ package docBook
 
 import (
 	"io/ioutil"
-	"github.com/clayts/docscii/file"
-	"github.com/clayts/docscii/xmlTree"
 	"path/filepath"
 	"strings"
+
+	"github.com/clayts/docscii/file"
+	"github.com/clayts/docscii/xmlTree"
 )
 
 func findBetween(s, a, b string) string {
@@ -112,7 +113,8 @@ func (d *Doc) loadData(filename string) {
 						if v := findBetween(c.Attributes["DIRECTIVE"], " \"", "\""); v != "" {
 							c.Kind = "ENTITY"
 							c.Attributes["KEY"] = k
-							c.Attributes["VALUE"] = v
+							//c.Attributes["VALUE"] = v
+							c.AddChildren(xmlTree.New(v))
 						}
 						process(dir, c.Children)
 					} else {
