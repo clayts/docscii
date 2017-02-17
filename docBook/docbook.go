@@ -113,7 +113,6 @@ func (d *Doc) loadData(filename string) {
 						if v := findBetween(c.Attributes["DIRECTIVE"], " \"", "\""); v != "" {
 							c.Kind = "ENTITY"
 							c.Attributes["KEY"] = k
-							//c.Attributes["VALUE"] = v
 							c.AddChildren(xmlTree.New(v))
 						}
 						process(dir, c.Children)

@@ -1,11 +1,12 @@
 package asciiDoc
 
 import (
-	"github.com/clayts/docscii/file"
-	"github.com/clayts/docscii/xmlTree"
 	"sort"
 	"strconv"
 	"strings"
+
+	"github.com/clayts/docscii/file"
+	"github.com/clayts/docscii/xmlTree"
 )
 
 type Doc struct {
@@ -42,7 +43,7 @@ func New() *Doc {
 	d := &Doc{}
 	d.Keywords = make(map[string]struct{})
 	d.Entities = make(map[string]string)
-	d.Entities["nbsp"] = ""
+	d.Entities["nbsp"] = " " //that's a real nbsp
 	d.Entities["blank"] = ""
 	d.Data = make(map[string]string)
 	d.Resources = make(map[string]string)
@@ -76,7 +77,8 @@ func (d Doc) Write(dir string) {
 			}
 		}
 		sort.Strings(es)
-		file.Write(dir+"/entities.adoc", strings.Replace(strings.Join(es, "\n"), "&nbsp;", " ", -1))
+		ents := strings.Join(es, "\n")
+		file.Write(dir+"/entities.adoc", ents)
 	}
 
 	if len(d.Keywords) > 0 {

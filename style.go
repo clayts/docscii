@@ -7,7 +7,7 @@ func init() {
 	DefaultStyle.AddFromString("admonitions", "note,warning,important")
 	DefaultStyle.AddFromString("listitems", "listitem,step,biblioentry,member,contrib")
 	DefaultStyle.AddFromString("paragraphs", "para,simpara,subtitle")
-	DefaultStyle.AddFromString("literal", "screen,synopsis,programlisting,indexterm,mediaobject")
+	DefaultStyle.AddFromString("literal", "screen,synopsis,programlisting,indexterm,mediaobject,ENTITY")
 
 	DefaultStyle.AddFromString("custom", "package,application,citetitle,command,option")
 	DefaultStyle.AddFromString("monospace", "literal,wordasword,filename,guilabel,systemitem,prompt,computeroutput,userinput,revnumber,parameter,guimenuitem,errortype,varname,function,methodname,classname,property,type,command,option,sgmltag,code,envar,guiicon")

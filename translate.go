@@ -102,7 +102,7 @@ func AsciiDocFromDocBook(db *docBook.Doc, Styles ...Style) *asciiDoc.Doc {
 				if c.IsKind(cfg["custom"]...) {
 					tag = "[" + c.Kind + "]"
 				}
-				output += ls + "pass:attributes[&blank;]" + tag + quoter + con + quoter + "pass:attributes[&blank;]" + rs
+				output += ls + "pass:attributes[{blank}]" + tag + quoter + con + quoter + "pass:attributes[{blank}]" + rs
 			} else if esc {
 				pass := "quotes"
 				for e := range ad.Entities {
@@ -128,7 +128,14 @@ func AsciiDocFromDocBook(db *docBook.Doc, Styles ...Style) *asciiDoc.Doc {
 			if docBook.ConditionsMatch(db.PublicanCfg["condition"], c.Attributes["condition"]) {
 				switch {
 				case c.IsKind("ENTITY"):
-					ad.Entities[c.Attributes["KEY"]] = translate(c.Children)
+					contents := translate(c.Children)
+					for k, v := range ad.Entities {
+						contents = strings.Replace(contents, "&"+k+";", v, -1)
+					}
+					for k, v := range ad.Entities {
+						ad.Entities[k] = strings.Replace(v, "&"+c.Attributes["KEY"]+";", contents, -1)
+					}
+					ad.Entities[c.Attributes["KEY"]] = contents
 					//output += translate(c.Children)
 				case c.IsKind("TEXT"):
 					delete(register, c)
@@ -175,7 +182,7 @@ func AsciiDocFromDocBook(db *docBook.Doc, Styles ...Style) *asciiDoc.Doc {
 						children = strings.Replace(children, ">", "&gt;", -1)
 					}
 					for e := range ad.Entities {
-						if strings.Contains(children, e) {
+						if strings.Contains(children, "&"+e+";") {
 							subs = append(subs, "attributes")
 							break
 						}
@@ -597,10 +604,10 @@ func AsciiDocFromDocBook(db *docBook.Doc, Styles ...Style) *asciiDoc.Doc {
 	for f, d := range ad.Data {
 		d = strings.Replace(d, "``", "` `", -1)
 		for _, delim := range " ,.!?-\n()|" {
-			d = strings.Replace(d, "pass:attributes[&blank;]"+string(delim), string(delim), -1)
-			d = strings.Replace(d, string(delim)+"pass:attributes[&blank;]", string(delim), -1)
+			d = strings.Replace(d, "pass:attributes[{blank}]"+string(delim), string(delim), -1)
+			d = strings.Replace(d, string(delim)+"pass:attributes[{blank}]", string(delim), -1)
 		}
-		d = strings.Replace(d, "pass:attributes[&blank;]:", ":", -1)
+		d = strings.Replace(d, "pass:attributes[{blank}]:", ":", -1)
 		for e := range ad.Entities {
 			d = strings.Replace(d, "&"+e+";", "{"+e+"}", -1)
 		}
