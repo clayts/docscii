@@ -305,17 +305,15 @@ func AsciiDocFromDocBook(db *docBook.Doc, Styles ...Style) *asciiDoc.Doc {
 				case c.IsKind("varlistentry"):
 					output += translate(c.Children.FilterOut("TEXT", "term"))
 				case c.IsKind(cfg["admonitions"]...) || c.IsKind("example"):
-					if c.IsKind(cfg["admonitions"]...) {
-						output += "\n[" + strings.ToUpper(c.Kind) + "]"
-					}
 					decor := "\n===="
 					for range c.Ancestors().Filter("example") {
 						decor += "="
 					}
 					decor += "\n"
-
 					output += decorateTitle(c, ".")
-
+					if c.IsKind(cfg["admonitions"]...) {
+						output += "\n[" + strings.ToUpper(c.Kind) + "]"
+					}
 					output += decor + translate(c.Children.FilterOut("TEXT").FilterOut("title")) + decor
 				case c.IsKind("corpauthor", "pubdate", "biblioid"):
 					var pre, suf string
