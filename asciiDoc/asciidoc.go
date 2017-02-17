@@ -1,6 +1,7 @@
 package asciiDoc
 
 import (
+	"path/filepath"
 	"sort"
 	"strconv"
 	"strings"
@@ -70,7 +71,6 @@ func (d Doc) Write(dir string) {
 
 	if len(d.Entities) > 0 {
 		var es []string
-		d.Data["master.adoc"] = "\n\ninclude::entities.adoc[]\n\n" + d.Data["master.adoc"]
 		for k, v := range d.Entities {
 			if k != "" && v != "" {
 				es = append(es, "\n:"+k+": "+v)
@@ -87,12 +87,22 @@ func (d Doc) Write(dir string) {
 			ks = append(ks, k)
 		}
 		sort.Strings(ks)
-		d.Data["master.adoc"] = ":keywords: " + strings.Join(ks, ", ") + d.Data["master.adoc"]
+		d.Data["master.adoc"] = ":keywords: " + strings.Join(ks, ", ") + "\n\n" + d.Data["master.adoc"]
 	}
 
 	d.Data["master.adoc"] = ":doctype: book\n" + d.Data["master.adoc"]
-	d.Data["master.adoc"] = ":experimental:\n" + d.Data["master.adoc"]
-	for f, d := range d.Data {
-		file.Write(dir+"/"+f, d)
+	for f, datum := range d.Data {
+		entFile := filepath.Dir(f)
+		entFile, _ = filepath.Rel(entFile, ".")
+		entFile = filepath.Clean(entFile + "/entities.adoc")
+		prefix := "\n:experimental:\n"
+		for k := range d.Entities {
+			if strings.Contains(datum, "{"+k+"}") {
+				prefix += "include::" + entFile + "[]\n"
+				break
+			}
+		}
+		prefix += "\n"
+		file.Write(dir+"/"+f, prefix+datum)
 	}
 }

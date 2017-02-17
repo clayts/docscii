@@ -3,11 +3,12 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/clayts/docscii/docBook"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/clayts/docscii/docBook"
 
 	"github.com/fatih/color"
 )
