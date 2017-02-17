@@ -49,7 +49,7 @@ func quoteSafe(cs xmlTree.Chunks) bool {
 	return true
 }
 
-func hoist(cs xmlTree.Chunks) {
+func bypassBrokenInclusions(cs xmlTree.Chunks) {
 	for _, c := range cs {
 		if c.IsKind("title", "indexterm") && c.Parent.IsKind("include") {
 			var newSibs xmlTree.Chunks
@@ -61,7 +61,7 @@ func hoist(cs xmlTree.Chunks) {
 			c.Parent.Children = newSibs
 			c.Parent.Parent.AddChild(c)
 		}
-		hoist(c.Children)
+		bypassBrokenInclusions(c.Children)
 	}
 }
 
@@ -118,7 +118,7 @@ func AsciiDocFromDocBook(db *docBook.Doc, Styles ...Style) *asciiDoc.Doc {
 		}
 		return output
 	}
-	hoist(data)
+	bypassBrokenInclusions(data)
 	translate = func(cs xmlTree.Chunks) string {
 		var output string
 		for _, c := range cs {
@@ -411,15 +411,15 @@ func AsciiDocFromDocBook(db *docBook.Doc, Styles ...Style) *asciiDoc.Doc {
 							p = p[:len(p)-2]
 						}
 
-						var hoisted bool
+						var bypassBrokenInclusionsed bool
 						for _, start := range "1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM" {
 							if string(p[0]) == string(start) || string(p[1]) == string(start) || string(p[2]) == string(start) {
 								output += itemDecor + " " + p + "\n"
-								hoisted = true
+								bypassBrokenInclusionsed = true
 								break
 							}
 						}
-						if !hoisted {
+						if !bypassBrokenInclusionsed {
 							output += itemDecor + " &blank;\n+\n" + p + "\n"
 						}
 					}
