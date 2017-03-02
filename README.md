@@ -22,7 +22,7 @@ To build books that require publican branding, use instead:
 What it currently does
 ----------------------
 + Converts even huge documents with complex structures from DocBook
-to AsciiDoc basically perfectly (in most cases).
+to AsciiDoc basically perfectly.
 + Maintains original file structure
 + Handles basic entities, publican branding, and conditionals
 + Handles customisable "semantic tagging" of various elements
